@@ -3,7 +3,7 @@ applications:
 - name: federalist
 buildpack: https://github.com/cloudfoundry/nodejs-buildpack#v1.5.18
 domain: 18f.gov
-disk_quota: 2G
+disk_quota: 1G
 memory: 1G
 instances: 2
 services:
