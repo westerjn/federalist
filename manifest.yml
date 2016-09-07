@@ -11,3 +11,5 @@ services:
 - federalist-builder-creds
 - federalist-redis
 - federalist-aws-user
+env:
+- NPM_CONFIG_PRODUCTION: "false"
