@@ -12,4 +12,4 @@ services:
 - federalist-redis
 - federalist-aws-user
 env:
-- NPM_CONFIG_PRODUCTION: "false"
+  NPM_CONFIG_PRODUCTION: "false"
