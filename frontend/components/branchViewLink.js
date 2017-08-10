@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { SITE } from '../propTypes';
+import appConfig from '../../config/app';
+
 
 const isDefaultBranch = (branchName, site) => branchName === site.defaultBranch;
 
@@ -17,14 +19,14 @@ const getUrlAndViewText = (branchName, site) => {
     return { url: site.demoViewLink, viewText: 'View demo' };
   }
   return {
-    url: `/preview/${site.owner}/${site.repository}/${branchName}/`,
+    url: `${appConfig.preview_hostname}/preview/${site.owner}/${site.repository}/${branchName}/`,
     viewText: 'Preview branch',
   };
 };
 
 const BranchViewLink = ({ branchName, site }) => {
   if (!isLinkable(branchName)) {
-    return <p>Branch name has un-linkable characters</p>;
+    return <span>Branch name has un-linkable characters</span>;
   }
 
   const { url, viewText } = getUrlAndViewText(branchName, site);
