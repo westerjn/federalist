@@ -79,8 +79,6 @@ function toJSON() {
   return object;
 }
 
-// TODO: Make sure links in SitePublishedBranchesTable work _without_ the result of this method
-// if so, delete this method
 function viewLinkForBranch(branch) {
   if (branch === this.defaultBranch) {
     return this.siteUrl();

@@ -1,7 +1,6 @@
 const serializeObject = (site, name) => ({
   name,
   site: site.toJSON(),
-  viewLink: site.viewLinkForBranch(name),
 });
 
 const serialize = (site, branch) => {
