@@ -2,8 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { expect } from 'chai';
 
-import BranchViewLink from '../../../frontend/components/branchViewLink';
-import appConfig from '../../../config/app';
+import { BranchViewLink } from '../../../frontend/components/branchViewLink';
 
 describe('<BranchViewLink/>', () => {
   const testSite = {
@@ -15,14 +14,26 @@ describe('<BranchViewLink/>', () => {
     repository: 'test-repo',
   };
 
+  let props;
+
+  beforeEach(() => {
+    props = {
+      branchName: 'branch-name',
+      site: testSite,
+      previewHostname: 'https://preview-hostname.com',
+    };
+  });
+
   it('does not link an unlinkable branch name', () => {
-    const wrapper = shallow(<BranchViewLink branchName="abc-#-def" site={testSite} />);
+    props.branchName = 'abc-#-def';
+    const wrapper = shallow(<BranchViewLink {...props} />);
     expect(wrapper.find('span').length).to.equal(1);
     expect(wrapper.find('span').text()).to.equal('Branch name has un-linkable characters');
   });
 
   it('renders a link to the default branch\'s site', () => {
-    const wrapper = shallow(<BranchViewLink branchName="default-branch" site={testSite} />);
+    props.branchName = 'default-branch';
+    const wrapper = shallow(<BranchViewLink {...props} />);
     const anchor = wrapper.find('a');
     expect(anchor.length).to.equal(1);
     expect(anchor.prop('href')).to.equal('https://prod-url.com');
@@ -30,7 +41,8 @@ describe('<BranchViewLink/>', () => {
   });
 
   it('renders a link to the demo branch\'s site', () => {
-    const wrapper = shallow(<BranchViewLink branchName="demo-branch" site={testSite} />);
+    props.branchName = 'demo-branch';
+    const wrapper = shallow(<BranchViewLink {...props} />);
     const anchor = wrapper.find('a');
     expect(anchor.length).to.equal(1);
     expect(anchor.prop('href')).to.equal('https://demo-url.com');
@@ -38,10 +50,12 @@ describe('<BranchViewLink/>', () => {
   });
 
   it('renders a preview link to the other branches', () => {
-    const wrapper = shallow(<BranchViewLink branchName="some-other-branch" site={testSite} />);
+    props.branchName = 'some-other-branch';
+    const wrapper = shallow(<BranchViewLink {...props} />);
     const anchor = wrapper.find('a');
     expect(anchor.length).to.equal(1);
-    expect(anchor.prop('href')).to.equal(`${appConfig.preview_hostname}/preview/test-owner/test-repo/some-other-branch/`);
+    expect(anchor.prop('href')).to.equal(
+      'https://preview-hostname.com/preview/test-owner/test-repo/some-other-branch/');
     expect(anchor.text()).equal('Preview branch');
   });
 });

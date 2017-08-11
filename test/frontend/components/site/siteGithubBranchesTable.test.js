@@ -39,12 +39,12 @@ describe('<SiteGithubBranchesTable/>', () => {
     expect(rows.at(1).contains('branch-b')).to.be.true;
   });
 
-  it('renders a <BranchViewLink /> for each branch', () => {
+  it('renders a connected <BranchViewLink /> for each branch', () => {
     props.branches.data = [
-        { name: 'master' },
-        { name: 'demo' },
-        { name: 'bad-?-branch' },
-        { name: 'preview-branch' },
+      { name: 'master' },
+      { name: 'demo' },
+      { name: 'bad-?-branch' },
+      { name: 'preview-branch' },
     ];
 
     props.site = {
@@ -55,7 +55,7 @@ describe('<SiteGithubBranchesTable/>', () => {
     };
 
     const wrapper = shallow(<SiteGithubBranchesTable {...props} />);
-    const links = wrapper.find('BranchViewLink');
+    const links = wrapper.find('Connect(BranchViewLink)');
     expect(links.length).to.equal(4);
     links.forEach((link, i) => {
       expect(link.prop('branchName')).to.equal(props.branches.data[i].name);

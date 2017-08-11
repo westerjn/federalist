@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import { SITE } from '../propTypes';
-import appConfig from '../../config/app';
-
 
 const isDefaultBranch = (branchName, site) => branchName === site.defaultBranch;
 
@@ -12,24 +11,24 @@ const isDemoBranch = (branchName, site) => branchName === site.demoBranch;
 // we only want to link branch names that are alphanumeric plus _ and -
 const isLinkable = s => /^[a-zA-Z0-9_-]+$/.test(s);
 
-const getUrlAndViewText = (branchName, site) => {
+const getUrlAndViewText = (branchName, site, previewHostname) => {
   if (isDefaultBranch(branchName, site)) {
     return { url: site.viewLink, viewText: 'View site' };
   } else if (isDemoBranch(branchName, site)) {
     return { url: site.demoViewLink, viewText: 'View demo' };
   }
   return {
-    url: `${appConfig.preview_hostname}/preview/${site.owner}/${site.repository}/${branchName}/`,
+    url: `${previewHostname}/preview/${site.owner}/${site.repository}/${branchName}/`,
     viewText: 'Preview branch',
   };
 };
 
-const BranchViewLink = ({ branchName, site }) => {
+export const BranchViewLink = ({ branchName, site, previewHostname }) => {
   if (!isLinkable(branchName)) {
     return <span>Branch name has un-linkable characters</span>;
   }
 
-  const { url, viewText } = getUrlAndViewText(branchName, site);
+  const { url, viewText } = getUrlAndViewText(branchName, site, previewHostname);
 
   return (<a href={url} target="_blank" rel="noopener noreferrer">{ viewText }</a>);
 };
@@ -37,7 +36,12 @@ const BranchViewLink = ({ branchName, site }) => {
 BranchViewLink.propTypes = {
   branchName: PropTypes.string.isRequired,
   site: SITE.isRequired,
+  previewHostname: PropTypes.string.isRequired,
 };
 
 
-export default BranchViewLink;
+const mapStateToProps = state => ({
+  previewHostname: state.FRONTEND_CONFIG.PREVIEW_HOSTNAME,
+});
+
+export default connect(mapStateToProps)(BranchViewLink);
