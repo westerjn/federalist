@@ -32,6 +32,8 @@ const sequelize = require('./api/models').sequelize;
 
 config.session.store = new PostgresStore({ db: sequelize });
 
+// TODO: ejs doesn't support blocks -- might want to replace with one that does
+// because it will make templatizing difficult
 app.engine('html', require('ejs').renderFile);
 
 // When deployed we are behind a proxy, but we want to be

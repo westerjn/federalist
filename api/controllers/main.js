@@ -11,34 +11,63 @@ function loadAssetManifest() {
 
 let webpackAssets = loadAssetManifest();
 
+// TODO: need to figure out a solution for the flag icon
+// suggest using it as background-image in SASS in order to have it
+// figured out by webpack
+// use .usa-disclaimer-official class to target
+
+function defaultContext() {
+  if (process.env.NODE_ENV === 'development') {
+    // reload the webpack assets during development so we don't have to
+    // restart the server for front end changes
+    webpackAssets = loadAssetManifest();
+  }
+
+  const siteDisplayEnv = config.app.app_env !== 'production' ? config.app.app_env : null;
+
+  const context = {
+    isAuthenticated: false,
+    siteWideError: null,
+    webpackAssets,
+    siteDisplayEnv,
+  };
+
+  return context;
+}
+
 module.exports = {
-  index(req, res) {
-    if (process.env.NODE_ENV === 'development') {
-      // reload the webpack assets during development so we don't have to
-      // restart the server for front end changes
-      webpackAssets = loadAssetManifest();
+  home(req, res) {
+    // redirect to main app if is authenticated
+    if (req.session.authenticated) {
+      return res.redirect('/sites');
     }
 
-    const siteDisplayEnv = config.app.app_env !== 'production' ? config.app.app_env : null;
+    return res.render('home.ejs', defaultContext());
+  },
+
+  app(req, res) {
+    // TODO: Do this check on the router instead?
+    // TODO: Perhaps add a "You are not authenticated" flash message?
+    if (!req.session.authenticated) {
+      return res.redirect('/');
+    }
+
+    const context = defaultContext();
+
+    context.isAuthenticated = true;
+    context.siteWideError = SiteWideErrorLoader.loadSiteWideError();
+
+    // TODO: check that this is properly set
+    context.username = req.user.username;
 
     const frontendConfig = {
       TEMPLATES: config.templates,
       PREVIEW_HOSTNAME: config.app.preview_hostname,
     };
 
-    const context = {
-      siteWideError: null,
-      jsBundleName: webpackAssets['main.js'],
-      cssBundleName: webpackAssets['main.css'],
-      siteDisplayEnv,
-      frontendConfig,
-    };
+    context.frontendConfig = frontendConfig;
 
-    if (req.session.authenticated) {
-      context.siteWideError = SiteWideErrorLoader.loadSiteWideError();
-    }
-
-    res.render('index.html', context);
+    return res.render('app.ejs', context);
   },
 
   robots(req, res) {

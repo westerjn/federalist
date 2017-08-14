@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <%- include('./includes/_head') -%>
+
+    <title>
+      Federalist<% if (siteDisplayEnv) { %> | <%= siteDisplayEnv %><% } %>
+    </title>
+
+    <script>
+      window.FRONTEND_CONFIG = <%- JSON.stringify(frontendConfig) %>;
+    </script>
+  </head>
+  <body>
+    <% if (siteWideError) { %>
+      <div class="usa-alert usa-alert-warning usa-alert-home" role="alert">
+        <div class="usa-alert-body">
+          <h3 class="usa-alert-heading"><%= siteWideError.heading %></h3>
+          <p class="usa-alert-text">
+            <%- siteWideError.body %>
+          </p>
+        </div>
+      </div>
+    <% } %>
+
+    <%- include('./includes/_header') -%>
+
+    <div id="js-app">
+      <!-- TODO: Render a spinner here while app loads? -->
+    </div>
+
+    <script src="/<%= webpackAssets['main.js'] %>"></script>
+
+    <%- include('./includes/_trackers') -%>
+  </body>
+</html>
