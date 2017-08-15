@@ -6,8 +6,13 @@ const config = require('../../../config');
 const session = require('../support/session');
 const factory = require('../support/factory');
 
+// TODO: test /sites redirects when not auth
+//      test /sites only allows auth
+//      test / displays home content
+//      test / redirects to /sites when authenticated
+
 describe('Main Site', () => {
-  describe('GET /', () => {
+  describe('Home', () => {
     it('should work', () => {
       factory.build().then(() => request(app)
           .get('/')
@@ -103,7 +108,7 @@ describe('Main Site', () => {
       it('should display a banner for authenticated users', (done) => {
         session().then(cookie =>
           request(app)
-            .get('/')
+            .get('/sites')
             .set('Cookie', cookie)
         )
         .then((response) => {
@@ -114,25 +119,13 @@ describe('Main Site', () => {
         })
         .catch(done);
       });
-
-      it('should not display a banner for unauthenticated users', (done) => {
-        request(app)
-          .get('/')
-        .then((response) => {
-          expect(response.text).to.not.match(/usa-alert-warning/);
-          expect(response.text).to.not.match(/Error message heading/);
-          expect(response.text).to.not.match(/Error message body/);
-          done();
-        })
-        .catch(done);
-      });
     });
 
     context('when an error is not present', () => {
       it('should not display a banner for authenticated users', (done) => {
         session().then(cookie =>
           request(app)
-            .get('/')
+            .get('/sites')
             .set('Cookie', cookie)
         )
         .then((response) => {
@@ -144,7 +137,7 @@ describe('Main Site', () => {
 
       it('should not display a banner for unauthenticated users', (done) => {
         request(app)
-          .get('/')
+          .get('/site')
         .then((response) => {
           expect(response.text).to.not.match(/usa-alert-warning/);
           done();

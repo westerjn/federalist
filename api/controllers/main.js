@@ -11,11 +11,6 @@ function loadAssetManifest() {
 
 let webpackAssets = loadAssetManifest();
 
-// TODO: need to figure out a solution for the flag icon
-// suggest using it as background-image in SASS in order to have it
-// figured out by webpack
-// use .usa-disclaimer-official class to target
-
 function defaultContext() {
   if (process.env.NODE_ENV === 'development') {
     // reload the webpack assets during development so we don't have to
@@ -27,7 +22,6 @@ function defaultContext() {
 
   const context = {
     isAuthenticated: false,
-    siteWideError: null,
     webpackAssets,
     siteDisplayEnv,
   };
@@ -42,7 +36,7 @@ module.exports = {
       return res.redirect('/sites');
     }
 
-    return res.render('home.ejs', defaultContext());
+    return res.render('home.njk', defaultContext());
   },
 
   app(req, res) {
@@ -55,10 +49,8 @@ module.exports = {
     const context = defaultContext();
 
     context.isAuthenticated = true;
-    context.siteWideError = SiteWideErrorLoader.loadSiteWideError();
-
-    // TODO: check that this is properly set
     context.username = req.user.username;
+    context.siteWideError = SiteWideErrorLoader.loadSiteWideError();
 
     const frontendConfig = {
       TEMPLATES: config.templates,
@@ -67,7 +59,7 @@ module.exports = {
 
     context.frontendConfig = frontendConfig;
 
-    return res.render('app.ejs', context);
+    return res.render('app.njk', context);
   },
 
   robots(req, res) {

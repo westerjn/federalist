@@ -22,6 +22,8 @@ const methodOverride = require('method-override');
 const expressWinston = require('express-winston');
 const session = require('express-session');
 const PostgresStore = require('connect-session-sequelize')(session.Store);
+const nunjucks = require('nunjucks');
+
 const responses = require('./api/responses');
 const passport = require('./api/services/passport');
 const RateLimit = require('express-rate-limit');
@@ -32,9 +34,10 @@ const sequelize = require('./api/models').sequelize;
 
 config.session.store = new PostgresStore({ db: sequelize });
 
-// TODO: ejs doesn't support blocks -- might want to replace with one that does
-// because it will make templatizing difficult
-app.engine('html', require('ejs').renderFile);
+nunjucks.configure('views', {
+  autoescape: true,
+  express: app,
+});
 
 // When deployed we are behind a proxy, but we want to be
 // able to access the requesting user's IP in req.ip, so
