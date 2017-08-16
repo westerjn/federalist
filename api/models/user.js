@@ -9,7 +9,7 @@ const associate = ({ User, Build, Site }) => {
   });
 };
 
-const toJSON = function () {
+function toJSON() {
   const object = this.get({
     plain: true,
   });
@@ -28,7 +28,7 @@ const toJSON = function () {
   });
 
   return object;
-};
+}
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
